@@ -17,4 +17,10 @@ steps:
   inputs:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'OCP Cluster'
-    cmd: 'oc get is -n liferay'
+    cmd: 'oc apply -f openshift/app/bc-s2i.yaml -n liferay'
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OCP Cluster'
+    version: '4.8'
+    cmd: 'oc apply -f openshift/app/deployment.yaml'
