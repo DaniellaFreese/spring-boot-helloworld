@@ -1,5 +1,6 @@
 # Starter pipeline
 
+
 # Start with a minimal pipeline that you can customize to build and deploy your code.
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
@@ -19,14 +20,19 @@ steps:
     connectionType: 'OpenShift Connection Service'
     openshiftService: 'OCP Cluster'
     version: '4.6'
-- task: oc-cmd@2
+
+- task: Bash@3
   inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP Cluster'
-    cmd: 'oc apply -f openshift/app/bc-s2i.yaml -n liferay'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP Cluster'
-    version: '4.8'
-    cmd: 'oc apply -f openshift/app/deployment.yaml'
+    filePath: 'tree'
+    
+# - task: oc-cmd@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP Cluster'
+#     cmd: 'oc apply -f openshift/app/bc-s2i.yaml -n liferay'
+# - task: oc-cmd@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP Cluster'
+#     version: '4.8'
+#     cmd: 'oc apply -f openshift/app/deployment.yaml'
