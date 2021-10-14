@@ -25,14 +25,24 @@ steps:
     targetType: 'inline'
     script: 'tree'
     
-# - task: oc-cmd@2
-#   inputs:
-#     connectionType: 'OpenShift Connection Service'
-#     openshiftService: 'OCP Cluster'
-#     cmd: 'oc apply -f openshift/app/bc-s2i.yaml -n liferay'
-# - task: oc-cmd@2
-#   inputs:
-#     connectionType: 'OpenShift Connection Service'
-#     openshiftService: 'OCP Cluster'
-#     version: '4.8'
-#     cmd: 'oc apply -f openshift/app/deployment.yaml'
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OCP connection'
+    cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/bc-s2i.yaml -n test'
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OCP connection'
+    cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/deployment.yaml -n test'
+
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OCP connection'
+    cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/svc.yaml -n test'
+- task: oc-cmd@2
+  inputs:
+    connectionType: 'OpenShift Connection Service'
+    openshiftService: 'OCP connection'
+    cmd: 'oc start-build spring-boot-helloworld-s2i -n test'
