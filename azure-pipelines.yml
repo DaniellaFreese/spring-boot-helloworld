@@ -12,14 +12,7 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
 
-# - task: oc-setup@2
-#   inputs:
-#     connectionType: 'OpenShift Connection Service'
-#     openshiftService: 'OCP Cluster'
-#     version: '4.6'
 - task: Bash@3
   inputs:
     targetType: 'inline'
