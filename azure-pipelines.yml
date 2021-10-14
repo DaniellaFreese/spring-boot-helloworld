@@ -15,15 +15,15 @@ steps:
 - script: echo Hello, world!
   displayName: 'Run a one-line script'
 
-- task: oc-setup@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP Cluster'
-    version: '4.6'
-
+# - task: oc-setup@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP Cluster'
+#     version: '4.6'
 - task: Bash@3
   inputs:
-    filePath: 'tree'
+    targetType: 'inline'
+    script: 'tree'
     
 # - task: oc-cmd@2
 #   inputs:
