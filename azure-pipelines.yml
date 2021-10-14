@@ -17,25 +17,29 @@ steps:
   inputs:
     targetType: 'inline'
     script: 'tree'
-    
-- task: oc-cmd@2
+- task: Docker@2
   inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP connection'
-    cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/bc-s2i.yaml -n test'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP connection'
-    cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/deployment.yaml -n test'
+    containerRegistry: 'azure-container-registry'
+    command: 'login'
 
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP connection'
-    cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/svc.yaml -n test'
-- task: oc-cmd@2
-  inputs:
-    connectionType: 'OpenShift Connection Service'
-    openshiftService: 'OCP connection'
-    cmd: 'oc start-build spring-boot-helloworld-s2i -n test'
+# - task: oc-cmd@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP connection'
+#     cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/bc-s2i.yaml -n test'
+# - task: oc-cmd@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP connection'
+#     cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/deployment.yaml -n test'
+
+# - task: oc-cmd@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP connection'
+#     cmd: 'oc apply -f $(Build.SourcesDirectory)/openshift/app/svc.yaml -n test'
+# - task: oc-cmd@2
+#   inputs:
+#     connectionType: 'OpenShift Connection Service'
+#     openshiftService: 'OCP connection'
+#     cmd: 'oc start-build spring-boot-helloworld-s2i -n test'
