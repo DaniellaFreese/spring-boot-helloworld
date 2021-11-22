@@ -21,18 +21,18 @@ If are coming from Openshift 3.x, you may recall Openshift Templates. A very sim
 
 ## Deploy Sample Application 
 
-**I. Pre-requisites**  
+### **I. Pre-requisites**  
 1. Access to an Openshift Cluster 
 2. Install Helm 3 cli tool. It can be located from the Command Line Tools page in the Openshift Console. 
 
-**II. Create Namespace and build the spring-boot image**  
+### **II. Create Namespace and build the spring-boot image**  
 First create a namespace to deploy your sample application: `oc new-project <project-name>`
 
 Second, use the S2I BuildConfig Manifest in the ./openshift/app/bc-s2i.yaml to build the image in your namespace: `oc apply -f ../app/bc-s2i.yaml`
 
 Kick off a build: `oc start-build spring-boot-helloworld-s2i`
 
-**III. Deploy the Application via the Helm-Chart**
+### **III. Deploy the Application via the Helm-Chart**
 For this sample, we will be installing this local chart 
 
 1. Install a local chart the first time via the following command: `helm install spring-boot-helloworld ./ -f values.yaml --create-namespace -n <project-name>`
