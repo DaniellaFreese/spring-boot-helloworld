@@ -6,12 +6,21 @@ spec:
   serviceAccountName: pipeline 
   pipelineRef:
     name: mvn-binary-pipeline
+  resources: 
+    - name: git-oc-two
+      resourceSpec: 
+        type: git 
+        params: 
+          - name: revision 
+            value: master 
+          - name: url 
+            value: https://github.com/DaniellaFreese/spring-boot-helloworld.git
   workspaces:
   - name: shared-workspace
     volumeClaimTemplate:
       spec: 
         accessModes: 
-          - ReadWriteOnce # access mode may affect how you can use this volume in parallel tasks
+          - ReadWriteOnce 
         resources:
           requests:
             storage: 1Gi

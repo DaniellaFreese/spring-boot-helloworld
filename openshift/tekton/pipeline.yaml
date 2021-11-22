@@ -19,7 +19,7 @@ spec:
   workspaces:
     - name: shared-workspace
     - name: maven-settings
-    - name: images-url 
+    - name: images-url
   tasks:
     - name: fetch-repository
       taskRef:
@@ -45,11 +45,13 @@ spec:
         - name: source 
           workspace: shared-workspace
         - name: maven-settings
-          workspace: maven-settings 
+          workspace: maven-settings
+      runAfter: 
+        - fetch-repository
       params: 
         - name: GOALS 
           value: ['test']
-    - name: maven package
+    - name: maven-package
       taskRef: 
         name: maven
         kind: ClusterTask 
@@ -81,18 +83,4 @@ spec:
         - name: TLSVERIFY
           value: "false"
       runAfter: 
-        - maven package
-    - name: deploy-dev 
-      taskRef: 
-        name: openshift-client
-        kind: ClusterTask
-      workspaces:
-          - name: manifest-dir
-            workspace: shared-workspace
-      params:
-          - name: SCRIPT
-            value: |
-              oc apply --filename openshift/app/deployment.yaml
-              oc wait --for=condition=available --timeout=600s deployment/spring-boot-helloworld
-              echo "-----------Displaying all the pods-----------"
-              oc get pods
+        - maven-package
