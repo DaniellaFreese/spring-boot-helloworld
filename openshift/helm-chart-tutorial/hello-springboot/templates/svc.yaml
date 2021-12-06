@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: spring-boot-helloworld
+  labels:
+    app: spring-boot-helloworld
+    version: v1
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: spring-boot-helloworld
