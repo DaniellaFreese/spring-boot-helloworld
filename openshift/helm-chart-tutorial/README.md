@@ -128,12 +128,23 @@ podAnnotations:
 
 *For more examples on flow control (if/else, or loops), take a look at the link in the Additional Documentation section.*
 
-#### Helpers 
+#### Named Templates/Partials in _helpers.tpl  
+Following the Helm chart documentation, a *named template* also called *partial* or a *subtemplate* is simply a template defined inside of a file. The _helpers.tpl file is the typical location to store all the partials. 
 
+TODO- create a partial for labels 
+reference the partial in the deployment 
+
+### Templatize svc.yaml 
+TODO 
+
+## What's Next! 
+We we will cover: 
+- writing Chart Tests
+- writing a NOTES.txt
 
 # Additional Documentation/Resources
-[Helm - Chart Templating Guide](https://helm.sh/docs/chart_template_guide/getting_started/)  
-Go Templates Basic Syntax - still looking for a good resource  
+[Helm - Chart Templating Guide](https://helm.sh/docs/chart_template_guide/getting_started/)   
 [Go Sprig Package](https://github.com/Masterminds/sprig)  
 [Chart Tests](https://helm.sh/docs/topics/chart_tests/) 
 [Flat vs Nested Values](https://helm.sh/docs/chart_best_practices/values/#flat-or-nested-values) 
+[Named Templates / Partials](https://helm.sh/docs/chart_template_guide/named_templates/)
