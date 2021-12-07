@@ -41,13 +41,18 @@ hello-springboot/
 ```
 1. **Chart.yaml :** **Required**, contains the metadata for the chart. Information that an end user would find helpful. It provides, the name, description for the chart. The other two important attributes, version and appVersion. Version = the version of the chart. AppVersion is the version of the microservice/app itself. For standard developers, when the microservice is being upgraded on a cluster, it is the `appVersion` that is incremented not the `version`. 
    
-2. **templates/** **Required**
-   1. **various templates :** **Required** Every yaml file found in this folder is a go-template. Helm will be pick up any yaml files in this directly, and process it when you install/upgrade the helm chart on the cluster. 
-   2. **_helpers.tpl :** **Optional** A place to put template helpers that you can re-use throughout the chart
-   3. **tests/ :** **Optional** tests that validate that the chart works as expected when it is installed
+2. **templates/ :** **Required**
+   * **various templates :** **Required** Every yaml file found in this folder is a go-template. Helm will be pick up any yaml files in this directly, and process it when you install/upgrade the helm chart on the cluster. 
+   * **_helpers.tpl :** **Optional** A place to put template helpers that you can re-use throughout the chart
+   * **tests/ :** **Optional** tests that validate that the chart works as expected when it is installed
 3. **charts/ :**  **Optional** A directory containing any charts upon which this chart depends
 4. **values.yaml :** The default configuration values for this chart, that later is duplicated per env. 
 5. **NOTES.txt :** **Optional** This is a templated, plaintext file that is printed after the chart is successfully deployed. It's great place to describe the next steps for using a chart once it's deployed. 
+
+
+## How to Test the Chart 
+We want to be able to test our chart as we build and customize it. First connect to your cluster via the command line. Once logged in to test the chart, we will be running the following command:  
+`helm install test-chart hello-springboot/ --dry-run --debug -f hello-springboot/values.yaml`
 
 ## Customizing the Helm Chart 
 Now that we've quickly reviewed all the files/directories. Lets's go ahead and blow away everything in the templates directory and start from scratch.  
@@ -56,6 +61,7 @@ Now that we've quickly reviewed all the files/directories. Lets's go ahead and b
 We will templatize the resources in the `openshift/app/ directory`, skipping over the buildconfigs. Copy `app/deployment.yaml` and `app/svc.yaml` to the templates directory. 
 
 ### Templatize Deployment.yaml 
+#### The Basics
 1. Replace the micro-sevice name `spring-boot-helloworld` with a variable. Anywhere we see `spring-boot-helloworld` we will replace it with: `{{ .Values.appName }}`, Example: 
     ```
     apiVersion: apps/v1
@@ -76,6 +82,7 @@ We will templatize the resources in the `openshift/app/ directory`, skipping ove
     ```
 3. Similarly update replicas in the deployment.yaml, with a value called `replicasCount`. In the values file, default replicaCount to 1. 
 
+#### Flat vs Nested Values 
 4. Next update the image name and tag in the template. These two parameters are related, so we will create a nested values. Update the image, line to the following:  
 ```image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"```  
 The go values are in double quotes intentionally because the **:**, so please use the double quotes.   
@@ -90,8 +97,38 @@ The go values are in double quotes intentionally because the **:**, so please us
       tag: latest
     ...
     ```
+#### Flow Control- Scope Restriction
+Go templates/helm there are options to use if/else statements, loops, and scope restrictions. We need to use some features in flow control to add some annotations to the deployment. 
 
-6. 
+
+1. Use scope restriction, keyword `with`, to add the podAnnotations. In the deployment.yaml that will look like: 
+```
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.appName }}
+        version: v1
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{ end }}
+```
+To translate the with statement above, it is saying: with the podAnnotations map defined in the values file, convert to yaml (toYaml function), and add each element to the deployment yaml, and indent each element 8 spaces with a new line (nindent function). 
+
+2. In the values.yaml file add the following: 
+```
+...
+#default podAnnotations example 
+#podAnnotations: {}
+podAnnotations:
+  alpha.image.policy.openshift.io/resolve-names: '*'
+  example: hello-annotation 
+...
+```
+
+*For more examples on flow control (if/else, or loops), take a look at the link in the Additional Documentation section.*
+
+#### Helpers 
 
 
 # Additional Documentation/Resources

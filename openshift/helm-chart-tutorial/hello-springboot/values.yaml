@@ -6,9 +6,16 @@ appName: spring-boot-helloworld
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: spring-boot-helloworld 
   tag: latest
 
+#default podAnnotations example 
+#podAnnotations: {}
+podAnnotations:
+  alpha.image.policy.openshift.io/resolve-names: '*'
+  example: hello-annotation
+
+  
 # imagePullSecrets: []
 # nameOverride: ""
 # fullnameOverride: ""
