@@ -3,8 +3,7 @@ kind: Deployment
 metadata:
   name: {{ .Values.appName }}
   labels:
-    app: {{ .Values.appName }}
-    version: v1
+    {{- include "helloworld-springboot.labels" . | nindent 4 }}
 spec:
   replicas: {{  .Values.replicaCount }}
   selector:
@@ -14,8 +13,7 @@ spec:
   template:
     metadata:
       labels:
-        app: {{ .Values.appName }}
-        version: v1
+        {{- include "helloworld-springboot.labels" . | nindent 8 }}
     {{- with .Values.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}

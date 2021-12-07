@@ -83,11 +83,11 @@ We will templatize the resources in the `openshift/app/ directory`, skipping ove
 3. Similarly update replicas in the deployment.yaml, with a value called `replicasCount`. In the values file, default replicaCount to 1. 
 
 #### Flat vs Nested Values 
-4. Next update the image name and tag in the template. These two parameters are related, so we will create a nested values. Update the image, line to the following:  
+1. Next update the image name and tag in the template. These two parameters are related, so we will create a nested values. Update the image, line to the following:  
 ```image: "{{ .Values.image.repository }}:{{ .Values.image.tag}}"```  
 The go values are in double quotes intentionally because the **:**, so please use the double quotes.   
 
-5. The values **image.repository** and **image.tag** are commonly used in helm chart world, and an example of using nested values (they should be indented 2 spaces below **image**). In the values.yaml file, these defaults would look like: 
+2. The values **image.repository** and **image.tag** are commonly used in helm chart world, and an example of using nested values (they should be indented 2 spaces below **image**). In the values.yaml file, these defaults would look like: 
     ```
     appName: spring-boot-helloworld 
     replicaCount: 1
@@ -131,11 +131,47 @@ podAnnotations:
 #### Named Templates/Partials in _helpers.tpl  
 Following the Helm chart documentation, a *named template* also called *partial* or a *subtemplate* is simply a template defined inside of a file. The _helpers.tpl file is the typical location to store all the partials. 
 
-TODO- create a partial for labels 
-reference the partial in the deployment 
+1. Create an empty templates/_helpers.tpl file: `touch _helpers.tpl`
 
-### Templatize svc.yaml 
-TODO 
+2. Define a partial for all common labels in the _helpers.tpl, with the following example below: 
+```
+    {{/*Common labels*/}}
+    {{- define "helloworld-springboot.labels" -}}
+    {{- if .Chart.Name }}
+    helm.sh/chart: {{ .Chart.Name }}
+    {{- end }}
+    app: {{ .Values.appName }}
+    {{- if .Chart.AppVersion }}
+    version: {{ .Chart.AppVersion | quote }}
+    {{- end }}
+    {{- end }}
+```
+In the partial above, we are taking advantage of *Built-in Objects* from helm. Examples being, .Chart.Name, and .Chart.AppVersion will pull directly from the Chart.yaml itself. There is also Release attributes that can be used. More info can be found in the Helm Documentation. Check out the link below. 
+
+3. Reference the partial in the deployment yaml, in the main metadata section, and the spec template section, as shown below: 
+```
+metadata:
+  name: {{ .Values.appName }}
+  labels:
+    {{- include "helloworld-springboot.labels" . | nindent 4 }}
+```
+```
+spec
+  ...
+  template:
+    metadata:
+      labels:
+        {{- include "helloworld-springboot.labels" . | nindent 8 }}
+```
+
+4. Validate and review through the final output with: `helm install test-chart hello-springboot/ --dry-run --debug -f hello-springboot/values.yaml`
+
+
+### Ready to Deploy 
+You're now ready to deploy the app using helm on openshift. Create a project on OCP, and run the following command: `helm install test-chart hello-springboot/ -f hello-springboot/values.yaml --create-namespace -n <project-name>`
+
+### On Your Own - Templatize svc.yaml 
+As an activity, go ahead and property templatize the svc.yaml such that, the svc name, labels, and selector are properly abstracted away from the template. 
 
 ## Upcoming in the Next Tutorial! 
 We we will cover: 
@@ -146,5 +182,6 @@ We we will cover:
 [Helm - Chart Templating Guide](https://helm.sh/docs/chart_template_guide/getting_started/)   
 [Go Sprig Package](https://github.com/Masterminds/sprig)  
 [Chart Tests](https://helm.sh/docs/topics/chart_tests/) 
-[Flat vs Nested Values](https://helm.sh/docs/chart_best_practices/values/#flat-or-nested-values) 
-[Named Templates / Partials](https://helm.sh/docs/chart_template_guide/named_templates/)
+[Flat vs Nested Values](https://helm.sh/docs/chart_best_practices/values/#flat-or-nested-values)  
+[Named Templates / Partials](https://helm.sh/docs/chart_template_guide/named_templates/)  
+[Built-In Objects](https://helm.sh/docs/chart_template_guide/builtin_objects/)    
