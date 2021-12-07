@@ -137,7 +137,7 @@ reference the partial in the deployment
 ### Templatize svc.yaml 
 TODO 
 
-## What's Next! 
+## Upcoming in the Next Tutorial! 
 We we will cover: 
 - writing Chart Tests
 - writing a NOTES.txt
