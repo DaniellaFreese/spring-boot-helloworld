@@ -3,18 +3,26 @@
 In this guide we will walk through the basics of build a helm chart from scratch with Helm 3. 
 
 The pre-requisistes for this tutorial: 
-1. access to an openshift cluster 
-2. helm 3 cli tool - available in the openshift command line tools 
-3. a decent yaml editor - Atom, Sublime, VSCode 
+1. Access to an openshift cluster 
+2. Helm 3 cli tool - available in the openshift command line tools 
+3. A decent yaml editor - Atom, Sublime, VSCode 
 
+
+In this tutorial we will review the following: 
+* Basic Chart syntax 
+* Flat vs Nest Values 
+* Flow Control examples 
+  * scope
+  * if/else 
+* Creating and Using a Partial in _helpers.tpl 
+  
 
 The output of this tutorial will be a helm-chart of this helloworld springboot application that successfully runs on an openshift cluster. 
 
 ## Helm Templating Language
 Helm is a packaging and templating engine for Kubernetes. In the background, it is using the Go templating engine and [Go Sprig Package](https://github.com/Masterminds/sprig) (template functions for Go templates) for building charts. In translation what does that really mean? The helm documentation actually provides a nice summary: 
-```
-While we talk about the "Helm template language" as if it is Helm-specific, it is actually a combination of the Go template language, some extra functions, and a variety of wrappers to expose certain objects to the templates. Many resources on Go templates may be helpful as you learn about templating.
-```
+
+**While we talk about the "Helm template language" as if it is Helm-specific, it is actually a combination of the Go template language, some extra functions, and a variety of wrappers to expose certain objects to the templates. Many resources on Go templates may be helpful as you learn about templating.**
 
 ## Creating Your First Helm Chart 
 Create a boilder plate helm chart, called hello-springboot with the helm cli tool: `helm create hello-springboot`
@@ -146,7 +154,9 @@ Following the Helm chart documentation, a *named template* also called *partial*
     {{- end }}
     {{- end }}
 ```
-In the partial above, we are taking advantage of *Built-in Objects* from helm. Examples being, .Chart.Name, and .Chart.AppVersion will pull directly from the Chart.yaml itself. There is also Release attributes that can be used. More info can be found in the Helm Documentation. Check out the link below. 
+Above we created a partial called helloworld.springboot.labels. It's using if/else flow control and *Built-in Objects* `.Chart.Name`, and `.Chart.AppVersion` from the Chart.yaml itself. If those attribute are defined, then when the partial is executed they will be added to the labels.  
+
+*There are several Built-in Objects* avaiable in helm, check out the link in the Additional Documentation section.* 
 
 3. Reference the partial in the deployment yaml, in the main metadata section, and the spec template section, as shown below: 
 ```
